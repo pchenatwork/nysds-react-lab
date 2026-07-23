@@ -1,0 +1,218 @@
+/* Styles the <NysButton> host only — colors, typography, focus, and hover
+   come from the component itself (see AGENTS.md: no overriding internals). */
+.counter {
+  margin-bottom: var(--nys-space-300);
+}
+
+.hero {
+  position: relative;
+
+  .base,
+  .framework,
+  .vite {
+    inset-inline: 0;
+    margin: 0 auto;
+  }
+
+  .base {
+    width: 170px;
+    position: relative;
+    z-index: 0;
+  }
+
+  .framework,
+  .vite {
+    position: absolute;
+  }
+
+  .framework {
+    z-index: 1;
+    top: 34px;
+    height: 28px;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+      scale(1.4);
+  }
+
+  .vite {
+    z-index: 0;
+    top: 107px;
+    height: 26px;
+    width: auto;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+      scale(0.8);
+  }
+}
+
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nys-space-300);
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+
+  @media (width <= 1024px) {
+    padding: var(--nys-space-400) var(--nys-space-250) var(--nys-space-300);
+    gap: var(--nys-space-200);
+  }
+}
+
+#next-steps {
+  display: flex;
+  border-top: var(--nys-border-width-sm) solid var(--nys-color-base);
+  text-align: left;
+
+  & > div {
+    flex: 1 1 0;
+    padding: var(--nys-space-400);
+
+    @media (width <= 1024px) {
+      padding: var(--nys-space-300) var(--nys-space-250);
+    }
+  }
+
+  .icon {
+    margin-bottom: var(--nys-space-200);
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (width <= 1024px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+#docs {
+  border-right: var(--nys-border-width-sm) solid var(--nys-color-base);
+
+  @media (width <= 1024px) {
+    border-right: none;
+    border-bottom: var(--nys-border-width-sm) solid var(--nys-color-base);
+  }
+}
+
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: var(--nys-space-100);
+  margin: var(--nys-space-400) 0 0;
+
+  .logo {
+    height: 18px;
+  }
+
+  a {
+    color: var(--nys-color-text);
+    font-size: var(--nys-font-size-ui-md);
+    border-radius: var(--nys-radius-md);
+    background: var(--nys-color-surface-raised);
+    display: flex;
+    padding: var(--nys-space-100) var(--nys-space-150);
+    align-items: center;
+    gap: var(--nys-space-100);
+    text-decoration: none;
+    transition: box-shadow 0.3s;
+
+    &:hover {
+      box-shadow: var(--nys-shadow-raised);
+    }
+
+    .button-icon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  @media (width <= 1024px) {
+    margin-top: var(--nys-space-250);
+    flex-wrap: wrap;
+    justify-content: center;
+
+    li {
+      flex: 1 1 calc(50% - var(--nys-space-100));
+    }
+
+    a {
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: var(--nys-border-width-sm) solid var(--nys-color-base);
+
+  @media (width <= 1024px) {
+    height: 48px;
+  }
+}
+
+.ticks {
+  position: relative;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: -4.5px;
+    border: 5px solid transparent;
+  }
+
+  &::before {
+    left: 0;
+    border-left-color: var(--nys-color-base);
+  }
+
+  &::after {
+    right: 0;
+    border-right-color: var(--nys-color-base);
+  }
+}
+
+/* Page container matching <nys-unavheader>'s internal layout:
+   gutter padding on the wrapper + 1280px centered content box.
+   content-box keeps the 1280px content width measured *inside* the
+   gutters, exactly like the header (padding on wrapper, max-width on
+   inner .content). Gutter tokens mirror the header's breakpoints. */
+.main-content {
+  box-sizing: content-box;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--nys-gutter-xs, 20px);
+}
+
+@media (min-width: 480px) {
+  .main-content {
+    padding: 0 var(--nys-gutter-sm, 20px);
+  }
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding: 0 var(--nys-gutter-md, 32px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-content {
+    padding: 0 var(--nys-gutter-lg, 32px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .main-content {
+    padding: 0 var(--nys-gutter-xl, 64px);
+  }
+}
+
+/* Theme picker sits top-right, above the tabs. Spacing via NYSDS tokens. */
+.theme-picker-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: var(--nys-space-200);
+}

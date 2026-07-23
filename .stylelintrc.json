@@ -1,0 +1,38 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "plugins": ["stylelint-declaration-strict-value"],
+  "rules": {
+    "scale-unlimited/declaration-strict-value": [
+      [
+        "/color$/",
+        "fill",
+        "stroke",
+        "font-size",
+        "font-weight",
+        "font-family",
+        "line-height",
+        "gap",
+        "row-gap",
+        "column-gap",
+        "/^margin/",
+        "/^padding/"
+      ],
+      {
+        "ignoreValues": [
+          "transparent",
+          "currentColor",
+          "inherit",
+          "initial",
+          "unset",
+          "revert",
+          "none",
+          "auto",
+          "normal",
+          "0"
+        ],
+        "disableFix": true,
+        "message": "Use a --nys-* design token (e.g. var(--nys-color-text) / var(--nys-space-150)) instead of a hardcoded value."
+      }
+    ]
+  }
+}

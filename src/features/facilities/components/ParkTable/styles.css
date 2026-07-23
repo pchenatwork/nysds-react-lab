@@ -1,0 +1,77 @@
+/* ── ParkDetailModal card ──────────────────────────────────────────────
+   Rendered inside NysModal's default slot. Slotted content stays in the
+   light DOM, so these class selectors reach it (unlike nys-table, which
+   deep-clones into its shadow root). All colors/spacing come from NYSDS
+   design tokens loaded globally via nysds-full.min.css. */
+.park-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nys-space-150);
+}
+
+.park-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nys-space-200);
+}
+
+.park-card__location {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nys-space-50);
+  color: var(--nys-color-text-weak);
+  font-size: var(--nys-font-size-body-md);
+}
+
+.park-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nys-space-100);
+}
+
+/* Two side-by-side lists, each an equal-width column that stacks on narrow
+   viewports. */
+.park-card__columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nys-space-200);
+}
+
+.park-card__list {
+  display: flex;
+  flex: 1 1 180px;
+  flex-direction: column;
+  margin: 0;
+}
+
+.park-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nys-space-200);
+  padding: var(--nys-space-20) 0;
+}
+
+.park-card__row-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nys-space-50);
+  color: var(--nys-color-text-weak);
+}
+
+.park-card__row-value {
+  margin: 0;
+  font-weight: var(--nys-font-weight-semibold);
+  color: var(--nys-color-text);
+}
+
+.park-card__link {
+  color: var(--nys-color-link);
+  text-decoration: none;
+}
+
+.park-card__link:hover {
+  color: var(--nys-color-link-strong);
+  text-decoration: underline;
+}
