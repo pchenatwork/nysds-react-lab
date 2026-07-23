@@ -9,6 +9,9 @@ import { useEffect, type RefObject } from "react";
  * the host catches them all; we route on data-* attributes so cells don't each
  * need their own handler and the routing survives row re-renders.
  *
+ * Action elements in any column's cells opt in by setting `data-row-action`
+ * (the action name, e.g. "view") and `data-row-id` (the row's identifier).
+ *
  * @param tableRef  ref to the `<nys-table>` element (NysTable forwards its ref)
  * @param onAction  called with (action, id) read off the clicked element's data-* attrs
  */
@@ -22,13 +25,13 @@ export function useNysTableRowAction(
 
     const handler = (e: Event) => {
       const el = (e.target as HTMLElement | null)?.closest?.(
-        "[data-park-action]",
+        "[data-row-action]",
       );
       if (!el) return;
       e.preventDefault(); // stop the href="#" jump
       onAction(
-        el.getAttribute("data-park-action") ?? "",
-        el.getAttribute("data-park-id") ?? "",
+        el.getAttribute("data-row-action") ?? "",
+        el.getAttribute("data-row-id") ?? "",
       );
     };
 

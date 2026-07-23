@@ -10,7 +10,7 @@ import {
   NysTabpanel,
 } from "@nysds/components/react";
 
-import FacilitiesTablePanel from "./features/facilities/FacilitiesTablePanel";
+import PaginatedTableDemoPanel from "./features/paginated-table-demo/PaginatedTableDemoPanel";
 import A11yLabelDemoPanel from "./features/a11y-demo/A11yLabelDemoPanel";
 import ThemePicker from "./features/theme/ThemePicker";
 import "./App.css";
@@ -21,8 +21,8 @@ function App() {
       <NysSkipnav />
       <NysUnavHeader />
       <NysGlobalHeader
-        appName="Recreation & Environment — Facilities Finder (Application Name)"
-        agencyName="NYS Office of Recreation & Environment (Agency Name)"
+        appName="NYSDS React Lab {{::Application Name::}}"
+        agencyName="NYS Office of Something {{::Agency Name::}}"
       />
 
       <main id="main-content" className="nys-flex-1">
@@ -36,7 +36,7 @@ function App() {
             <NysTab label="Accessibility: Cross-Shadow Labels" />
 
             <NysTabpanel>
-              <FacilitiesTablePanel />
+              <PaginatedTableDemoPanel />
             </NysTabpanel>
             <NysTabpanel>
               <A11yLabelDemoPanel />

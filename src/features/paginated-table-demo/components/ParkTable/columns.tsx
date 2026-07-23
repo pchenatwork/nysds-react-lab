@@ -29,8 +29,8 @@ export const PARK_COLUMNS: ColumnDef<Park>[] = [
       // useNysTableRowAction() for the routing on these data-* attributes.
       <a
         href="#"
-        data-park-action="view"
-        data-park-id={p.id}
+        data-row-action="view"
+        data-row-id={p.id}
         aria-label={`View ${p.parkName}`}
         title={`View details - ${p.parkName}`}
       >
