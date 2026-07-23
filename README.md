@@ -35,8 +35,8 @@ npm run dev        # http://localhost:3000  (opens automatically)
 
 Two tabs, wired up in `src/App.tsx` using the real NYSDS `nys-tabgroup`:
 
-1. **Paginated Table Demo** — *built.* A server-paged, sortable, searchable table of facilities with a county filter and a detail modal, consuming `nys-table`, `nys-pagination`, `nys-textinput`, `nys-select`, and `nys-modal`. Lives under `src/features/facilities/`. The tricky NYSDS interop (driving the shadow-DOM sort arrow + `aria-sort` from React state, and delegating row clicks out of the cloned rows) is isolated in `src/hooks/`.
-2. **Accessible Form** — *built.* A real, submittable NYS-style program-registration form built **entirely from NYSDS form-associated custom elements** (`src/features/registration/`). It demonstrates several recent NYSDS enhancements at once: form participation via ElementInternals (native `FormData` reads every field by `name` — no per-field plumbing), label + error association across the shadow boundary, `nys-combobox` type-to-filter autocomplete, and `nys-datepicker` with a min-date constraint. Verifiable end-to-end with Chrome DevTools' Accessibility pane and an axe scan.
+1. **Paginated Table Demo** — *built.* A server-paged, sortable, searchable table of facilities with a county filter and a detail modal, consuming `nys-table`, `nys-pagination`, `nys-textinput`, `nys-select`, and `nys-modal`. Lives under `src/features/paginated-table-demo/`. The tricky NYSDS interop (driving the shadow-DOM sort arrow + `aria-sort` from React state, and delegating row clicks out of the cloned rows) is isolated in `src/hooks/`.
+2. **Form Controls Demo** — *built.* A real, submittable NYS-style program-registration form built **entirely from NYSDS form-associated custom elements** (`src/features/registration-form-demo/`). It demonstrates several recent NYSDS enhancements at once: form participation via ElementInternals (native `FormData` reads every field by `name` — no per-field plumbing), label + error association across the shadow boundary, `nys-combobox` type-to-filter autocomplete, and `nys-datepicker` with a min-date constraint. Verifiable end-to-end with Chrome DevTools' Accessibility pane and an axe scan.
 
 A **live theme picker** (`src/features/theme/ThemePicker.tsx`) sits above the tabs and swaps all seven NYSDS agency themes at runtime.
 
@@ -154,10 +154,10 @@ nysds-react-lab/
    ├─ App.tsx                    # shell + nys-tabgroup (two tabs) + theme picker
    ├─ registerNysdsIcons.ts      # re-point nys-icon library for Vite
    ├─ types/common.ts            # generic paging contract (Entity/ColumnDef/PagedWeb*)
-   ├─ hooks/                     # useDebounce, useNysTableSortIndicator, useNysTableRowAction
+   ├─ hooks/                     # useNysTableSortIndicator, useNysTableRowAction
    └─ features/
-      ├─ facilities/             # Tab 1 — paginated table demo (built)
-      ├─ registration/           # Tab 2 — Accessible Form (form-associated controls)
+      ├─ paginated-table-demo/   # Tab 1 — Paginated Table Demo (built)
+      ├─ registration-form-demo/ # Tab 2 — Form Controls Demo (form-associated controls)
       └─ theme/ThemePicker.tsx   # live theme switcher
 ```
 
