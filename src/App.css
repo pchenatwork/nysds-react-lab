@@ -216,3 +216,13 @@
   justify-content: flex-end;
   margin-right: var(--nys-space-200);
 }
+
+/* Form + generic layout helpers (spacing via NYSDS tokens). */
+.component-grid { display: flex; flex-direction: column; gap: var(--nys-space-250); max-width: 40rem; }
+.component-row { display: flex; flex-wrap: wrap; gap: var(--nys-space-150); align-items: center; }
+
+/* Submitted-values summary inside the success alert. */
+.reg-summary { display: flex; flex-direction: column; gap: var(--nys-space-50); margin: var(--nys-space-100) 0 0; }
+.reg-summary__row { display: flex; gap: var(--nys-space-150); }
+.reg-summary__row dt { min-width: 8rem; font-weight: var(--nys-font-weight-semibold); color: var(--nys-color-text-weak); margin: 0; }
+.reg-summary__row dd { margin: 0; color: var(--nys-color-text); }

@@ -11,7 +11,7 @@ import {
 } from "@nysds/components/react";
 
 import PaginatedTableDemoPanel from "./features/paginated-table-demo/PaginatedTableDemoPanel";
-import A11yLabelDemoPanel from "./features/a11y-demo/A11yLabelDemoPanel";
+import RegistrationFormDemoPanel from "./features/registration-form-demo/RegistrationFormDemoPanel";
 import ThemePicker from "./features/theme/ThemePicker";
 import "./App.css";
 
@@ -21,8 +21,8 @@ function App() {
       <NysSkipnav />
       <NysUnavHeader />
       <NysGlobalHeader
-        appName="NYSDS React Lab {{::Application Name::}}"
-        agencyName="NYS Office of Something {{::Agency Name::}}"
+        appName="NYSDS React Lab (Application Name)"
+        agencyName="NYS Office of Something (Agency Name)"
       />
 
       <main id="main-content" className="nys-flex-1">
@@ -33,19 +33,19 @@ function App() {
 
           <NysTabgroup name="ORE demos">
             <NysTab label="Paginated Table Demo" />
-            <NysTab label="Accessibility: Cross-Shadow Labels" />
+            <NysTab label="Form Controls Demo" />
 
             <NysTabpanel>
               <PaginatedTableDemoPanel />
             </NysTabpanel>
             <NysTabpanel>
-              <A11yLabelDemoPanel />
+              <RegistrationFormDemoPanel />
             </NysTabpanel>
           </NysTabgroup>
         </div>
       </main>
 
-      <NysGlobalFooter agencyName="NYS Office of Recreation & Environment">
+      <NysGlobalFooter agencyName="NYS Office of Something (Agency Name)">
         <ul>
           <li>
             <a href="https://ny.gov">NY.gov</a>

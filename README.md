@@ -1,6 +1,8 @@
 # NYSDS React Lab
 
-A hands-on lab app built on the **New York State Design System (NYSDS)**, developed **AI-first** with the Claude Code VS Code extension talking to the `@nysds/mcp-server` MCP server. It scaffolds a React 19 + Vite app for a fictional *Office of Recreation & Environment (ORE)* and exercises two things a real NYS service needs: a production-grade data table, and correct accessibility across the web-component shadow boundary.
+**🔗 Live demo:** https://wonderful-sand-0a0dbe20f.7.azurestaticapps.net/ (Azure Static Web Apps)
+
+A hands-on reference app for consuming the **New York State Design System (NYSDS)** in React, developed **AI-first** with the Claude Code VS Code extension talking to the `@nysds/mcp-server` MCP server. It scaffolds a React 19 + Vite app that exercises two things a real NYS service needs: a production-grade data table, and correct accessibility across the web-component shadow boundary. The sample dataset (parks/recreation facilities) is just an example — the patterns are what matter.
 
 - **Framework:** React 19 + Vite (TypeScript)
 - **Design system:** `@nysds/components` + `@nysds/styles` (Lit 3 web components + design tokens)
@@ -33,8 +35,8 @@ npm run dev        # http://localhost:3000  (opens automatically)
 
 Two tabs, wired up in `src/App.tsx` using the real NYSDS `nys-tabgroup`:
 
-1. **Paginated Table Demo** — *built.* A server-paged, sortable, searchable table of NYS parks with a county filter and a detail modal, consuming `nys-table`, `nys-pagination`, `nys-textinput`, `nys-select`, and `nys-modal`. Lives under `src/features/paginated-table-demo/`. The tricky NYSDS interop (driving the shadow-DOM sort arrow + `aria-sort` from React state, and delegating row clicks out of the cloned rows) is isolated in `src/hooks/`.
-2. **Accessibility: Cross-Shadow Labels** — *placeholder.* Will demonstrate the label/error association behavior from NYSDS PR #1765 (cross-shadow label association + the error-association fix). Currently a stub in `src/features/a11y-demo/`.
+1. **Paginated Table Demo** — *built.* A server-paged, sortable, searchable table of facilities with a county filter and a detail modal, consuming `nys-table`, `nys-pagination`, `nys-textinput`, `nys-select`, and `nys-modal`. Lives under `src/features/facilities/`. The tricky NYSDS interop (driving the shadow-DOM sort arrow + `aria-sort` from React state, and delegating row clicks out of the cloned rows) is isolated in `src/hooks/`.
+2. **Accessible Form** — *built.* A real, submittable NYS-style program-registration form built **entirely from NYSDS form-associated custom elements** (`src/features/registration/`). It demonstrates several recent NYSDS enhancements at once: form participation via ElementInternals (native `FormData` reads every field by `name` — no per-field plumbing), label + error association across the shadow boundary, `nys-combobox` type-to-filter autocomplete, and `nys-datepicker` with a min-date constraint. Verifiable end-to-end with Chrome DevTools' Accessibility pane and an axe scan.
 
 A **live theme picker** (`src/features/theme/ThemePicker.tsx`) sits above the tabs and swaps all seven NYSDS agency themes at runtime.
 
@@ -101,6 +103,38 @@ The **full** stylesheet (`nysds-full.min.css`, linked in `index.html`) bundles a
 
 ---
 
+## Deployment
+
+Hosted on **Azure Static Web Apps**: https://wonderful-sand-0a0dbe20f.7.azurestaticapps.net/ The build is fully static (`dist/`), so it deploys to any static host/CDN; `vite.config.ts` sets `base: "/"` because SWA serves from the root.
+
+**Azure SWA build settings:**
+
+| Setting | Value |
+|---|---|
+| App location | `/` (repo root) |
+| Build command | `npm run build` |
+| Output location | `dist` |
+| API location | *(none — static only)* |
+
+**SPA routing:** `staticwebapp.config.json` sets `navigationFallback.rewrite: "/index.html"` so deep links / refreshes resolve to the app shell instead of 404ing. *Tip: keep this file in `public/` so `vite build` always copies it into `dist/`.*
+
+**To deploy a new build** (SWA CLI — scriptable, no CI required):
+
+```bash
+npm run build
+npx @azure/static-web-apps-cli deploy ./dist --env production \
+  --deployment-token <YOUR_SWA_DEPLOYMENT_TOKEN>
+```
+
+The deployment token comes from the Azure Portal → your Static Web App → **Manage deployment token**.
+
+**Alternatives:**
+
+- **VS Code** — the *Azure Static Web Apps* extension: right-click the app → **Deploy**, with build output `dist`.
+- **GitHub Actions (CI)** — Azure's `Azure/static-web-apps-deploy` action on push to `main`. *Not currently committed to this repo* — the site is deployed manually today; add a workflow if you want push-to-deploy.
+
+---
+
 ## Project structure
 
 ```
@@ -122,8 +156,8 @@ nysds-react-lab/
    ├─ types/common.ts            # generic paging contract (Entity/ColumnDef/PagedWeb*)
    ├─ hooks/                     # useDebounce, useNysTableSortIndicator, useNysTableRowAction
    └─ features/
-      ├─ paginated-table-demo/   # Tab 1 — paginated table demo (built)
-      ├─ a11y-demo/              # Tab 2 — cross-shadow label demo (placeholder)
+      ├─ facilities/             # Tab 1 — paginated table demo (built)
+      ├─ registration/           # Tab 2 — Accessible Form (form-associated controls)
       └─ theme/ThemePicker.tsx   # live theme switcher
 ```
 

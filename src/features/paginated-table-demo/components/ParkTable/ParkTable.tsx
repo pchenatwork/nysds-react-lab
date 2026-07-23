@@ -236,7 +236,9 @@ const ParkTable = () => {
               items.map((park) => (
                 <tr key={park.id}>
                   {PARK_COLUMNS.map((col) => (
-                    <td align={col.align}>{col.render(park)}</td>
+                    <td key={col.title} align={col.align}>
+                      {col.render(park)}
+                    </td>
                   ))}
                 </tr>
               ))
