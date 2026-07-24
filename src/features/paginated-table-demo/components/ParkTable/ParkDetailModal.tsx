@@ -36,6 +36,7 @@ const ParkDetailModal = ({ parkId, onClose }: ParkDetailModalProps) => {
     // Guard against out-of-order responses: if parkId changes (or the component
     // unmounts) before the promise resolves, ignore its result.
     let ignore = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional loading flag before an async fetch (react-hooks v7 rule)
     setLoading(true);
 
     fetchParkById(parkId).then((res) => {

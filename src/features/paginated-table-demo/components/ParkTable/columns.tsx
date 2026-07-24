@@ -28,7 +28,7 @@ export const PARK_COLUMNS: ColumnDef<Park>[] = [
       // The click is delegated from the nys-table host element; see
       // useNysTableRowAction() for the routing on these data-* attributes.
       <a
-        href="#"
+        href={`#view-${p.id}`}
         data-row-action="view"
         data-row-id={p.id}
         aria-label={`View ${p.parkName}`}

@@ -58,6 +58,7 @@ const ParkTable = () => {
   useEffect(() => {
     // Guard against out-of-order responses: if the inputs change (or the component unmounts) before the promise resolves, ignore its result.
     let ignore = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional loading flag before an async fetch (react-hooks v7 rule)
     setLoading(true);
 
     const request: ParkPagedWebRequest = {

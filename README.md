@@ -21,13 +21,15 @@ npm run dev        # http://localhost:3000  (opens automatically)
 
 ### Scripts
 
-| Script | What it does |
-|---|---|
-| `npm run dev` | Vite dev server at `http://localhost:3000` (fixed port). |
-| `npm run build` | `tsc -b && vite build` — type-check, then production build to `dist/`. |
-| `npm run preview` | Serve the production build locally. |
-| `npm run lint` | ESLint + Stylelint compliance gates (see below). |
-| `npm run lint:fix` | Same, auto-fixing what it can. |
+| Script             | What it does                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `npm run dev`      | Vite dev server at `http://localhost:3000` (fixed port).                           |
+| `npm run build`    | `tsc -b && vite build` — type-check, then production build to `dist/`.             |
+| `npm run preview`  | Serve the production build locally.                                                |
+| `npm run lint`     | ESLint **then** Stylelint (fail-fast `&&` — Stylelint is skipped if ESLint fails). |
+| `npm run lint:js`  | ESLint only.                                                                       |
+| `npm run lint:css` | Stylelint only.                                                                    |
+| `npm run lint:fix` | ESLint + Stylelint, auto-fixing what they can.                                     |
 
 ---
 
@@ -35,8 +37,8 @@ npm run dev        # http://localhost:3000  (opens automatically)
 
 Two tabs, wired up in `src/App.tsx` using the real NYSDS `nys-tabgroup`:
 
-1. **Paginated Table Demo** — *built.* A server-paged, sortable, searchable table of facilities with a county filter and a detail modal, consuming `nys-table`, `nys-pagination`, `nys-textinput`, `nys-select`, and `nys-modal`. Lives under `src/features/paginated-table-demo/`. The tricky NYSDS interop (driving the shadow-DOM sort arrow + `aria-sort` from React state, and delegating row clicks out of the cloned rows) is isolated in `src/hooks/`.
-2. **Form Controls Demo** — *built.* A real, submittable NYS-style program-registration form built **entirely from NYSDS form-associated custom elements** (`src/features/registration-form-demo/`). It demonstrates several recent NYSDS enhancements at once: form participation via ElementInternals (native `FormData` reads every field by `name` — no per-field plumbing), label + error association across the shadow boundary, `nys-combobox` type-to-filter autocomplete, and `nys-datepicker` with a min-date constraint. Verifiable end-to-end with Chrome DevTools' Accessibility pane and an axe scan.
+1. **Paginated Table Demo** — _built._ A server-paged, sortable, searchable table of facilities with a county filter and a detail modal, consuming `nys-table`, `nys-pagination`, `nys-textinput`, `nys-select`, and `nys-modal`. Lives under `src/features/paginated-table-demo/`. The tricky NYSDS interop (driving the shadow-DOM sort arrow + `aria-sort` from React state, and delegating row clicks out of the cloned rows) is isolated in `src/hooks/`.
+2. **Accessible Form** — _built._ A real, submittable NYS-style program-registration form built **entirely from NYSDS form-associated custom elements** (`src/features/registration-form-demo/`). It demonstrates several recent NYSDS enhancements at once: form participation via ElementInternals (native `FormData` reads every field by `name` — no per-field plumbing), label + error association across the shadow boundary, `nys-combobox` type-to-filter autocomplete, and `nys-datepicker` with a min-date constraint. Verifiable end-to-end with Chrome DevTools' Accessibility pane and an axe scan.
 
 A **live theme picker** (`src/features/theme/ThemePicker.tsx`) sits above the tabs and swaps all seven NYSDS agency themes at runtime.
 
@@ -50,12 +52,12 @@ This repo is deliberately configured to make the NYSDS "paved road" automatic �
 
 The design system ships a **Model Context Protocol** server, `@nysds/mcp-server`, that exposes every component's real API, tokens, and usage guidance to an AI assistant. Instead of guessing prop names from stale training data, Claude Code queries the server and generates NYSDS-correct code by default.
 
-| File | Purpose |
-|---|---|
-| `.mcp.json` | Registers the MCP server as **`nysds`**, launched on demand via `npx -y @nysds/mcp-server` (no global install). |
-| `AGENTS.md` | Vendor-neutral policy every assistant (Claude Code, Cursor, Copilot, Gemini) reads: query the MCP server first; never hand-roll a component NYSDS provides; style only through `--nys-*` tokens; meet WCAG 2.2 AA. |
-| `.claude/agents/nysds-consumer.md` | A scoped **subagent** you can delegate UI work to; enforces the same paved road on every task. |
-| `.claude/settings.local.json` | Enables the `nysds` server and pre-approves its read-only tools so the assistant doesn't stop to ask on every query. |
+| File                               | Purpose                                                                                                                                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.mcp.json`                        | Registers the MCP server as **`nysds`**, launched on demand via `npx -y @nysds/mcp-server` (no global install).                                                                                                    |
+| `AGENTS.md`                        | Vendor-neutral policy every assistant (Claude Code, Cursor, Copilot, Gemini) reads: query the MCP server first; never hand-roll a component NYSDS provides; style only through `--nys-*` tokens; meet WCAG 2.2 AA. |
+| `.claude/agents/nysds-consumer.md` | A scoped **subagent** you can delegate UI work to; enforces the same paved road on every task.                                                                                                                     |
+| `.claude/settings.local.json`      | Enables the `nysds` server and pre-approves its read-only tools so the assistant doesn't stop to ask on every query.                                                                                               |
 
 **MCP tools used** (names as approved in `settings.local.json`): `mcp__nysds__get_guide`, `mcp__nysds__validate_component_api`, `mcp__nysds__get_component`, `mcp__nysds__find_components`.
 
@@ -67,28 +69,34 @@ List the tools exposed by the `nysds` MCP server, then call get_guide for
 your training data.
 ```
 
-If Claude Code answers without calling the server, remind it: *"Use the `nysds` MCP server, not your training data."*
+If Claude Code answers without calling the server, remind it: _"Use the `nysds` MCP server, not your training data."_
 
 ### 2. Linter & compliance-gate setup
 
 Four layered checkpoints enforce what `AGENTS.md` states in prose. Each catches a different class of drift, and nothing on-standard is slowed down.
 
-| Layer | Tool | File | Catches |
-|---|---|---|---|
-| 1 | **TypeScript** | `tsconfig.*.json` | Invalid props/variants — the app imports typed React wrappers from `@nysds/components/react`. Strongest gate; runs in `npm run build`. |
-| 2 | **ESLint 9** (flat) | `eslint.config.js` | `react/forbid-elements` blocks hand-rolled native `button`/`input`/`select`/`textarea`/`dialog`; a `no-restricted-syntax` rule bans hardcoded hex colors; `jsx-a11y` static first pass. |
-| 3 | **Stylelint 16** | `.stylelintrc.json` | `declaration-strict-value` forces color/spacing/typography in CSS onto `--nys-*` tokens. |
-| 4 | **VS Code custom-data** | `.vscode/settings.json` | Flags unknown `--nys-*` tokens and `nys-*` attributes *as you type*, plus fix-on-save for ESLint/Stylelint. |
+| Layer | Tool                    | File                    | Catches                                                                                                                                                                                 |
+| ----- | ----------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | **TypeScript**          | `tsconfig.*.json`       | Invalid props/variants — the app imports typed React wrappers from `@nysds/components/react`. Strongest gate; runs in `npm run build`.                                                  |
+| 2     | **ESLint 9** (flat)     | `eslint.config.js`      | `react/forbid-elements` blocks hand-rolled native `button`/`input`/`select`/`textarea`/`dialog`; a `no-restricted-syntax` rule bans hardcoded hex colors; `jsx-a11y` static first pass. |
+| 3     | **Stylelint 16**        | `.stylelintrc.json`     | `declaration-strict-value` forces color/spacing/typography in CSS onto `--nys-*` tokens.                                                                                                |
+| 4     | **VS Code custom-data** | `.vscode/settings.json` | Flags unknown `--nys-*` tokens and `nys-*` attributes _as you type_, plus fix-on-save for ESLint/Stylelint.                                                                             |
 
 Run the gates:
 
 ```bash
-npm run lint
+npm run lint        # ESLint, then Stylelint (fail-fast)
+npm run lint:js     # ESLint only
+npm run lint:css    # Stylelint only
 ```
+
+> **`lint` is fail-fast — run the gates separately to see both.** `npm run lint` chains the two with `&&`, so if ESLint reports any error, Stylelint never runs and its findings stay hidden. Use `lint:js` and `lint:css` to run each gate independently (handy when demoing, or when ESLint failures are masking CSS issues). In CI, prefer running them as **two separate steps** so every gate reports even when another fails.
+
+> **The `.stylelintrc` separates NYSDS rules from style preferences.** The `declaration-strict-value` (NYSDS token) rule is the point and stays strict. The one tuned base-config rule is `selector-class-pattern`, relaxed to allow the project's **BEM** naming (`block__element` / `block--modifier`) — the same convention the NYSDS reference components use.
 
 > **ESLint is pinned to v9 on purpose.** Current Vite scaffolds install ESLint 10, but `eslint-plugin-react` and `eslint-plugin-jsx-a11y` do not support ESLint 10 yet, so their peer ranges refuse to resolve against it. This repo pins `eslint@^9`, which resolves cleanly with **no `--force` / `--legacy-peer-deps`**.
 
-> **Accessibility caveat — don't oversell the lint.** `jsx-a11y` catches only a *subset* of static a11y issues on native HTML; it largely cannot inspect `nys-*` web components and cannot verify contrast, focus order, or keyboard operability. Full WCAG 2.2 AA verification needs **runtime** tooling (axe-core, or Playwright + `@axe-core/playwright`) in CI. Treat the lint layer as the fast first pass, not proof of AA compliance.
+> **Accessibility caveat — don't oversell the lint.** `jsx-a11y` catches only a _subset_ of static a11y issues on native HTML; it largely cannot inspect `nys-*` web components and cannot verify contrast, focus order, or keyboard operability. Full WCAG 2.2 AA verification needs **runtime** tooling (axe-core, or Playwright + `@axe-core/playwright`) in CI. Treat the lint layer as the fast first pass, not proof of AA compliance.
 
 ---
 
@@ -109,14 +117,14 @@ Hosted on **Azure Static Web Apps**: https://wonderful-sand-0a0dbe20f.7.azuresta
 
 **Azure SWA build settings:**
 
-| Setting | Value |
-|---|---|
-| App location | `/` (repo root) |
-| Build command | `npm run build` |
-| Output location | `dist` |
-| API location | *(none — static only)* |
+| Setting         | Value                  |
+| --------------- | ---------------------- |
+| App location    | `/` (repo root)        |
+| Build command   | `npm run build`        |
+| Output location | `dist`                 |
+| API location    | _(none — static only)_ |
 
-**SPA routing:** `staticwebapp.config.json` sets `navigationFallback.rewrite: "/index.html"` so deep links / refreshes resolve to the app shell instead of 404ing. *Tip: keep this file in `public/` so `vite build` always copies it into `dist/`.*
+**SPA routing:** `staticwebapp.config.json` sets `navigationFallback.rewrite: "/index.html"` so deep links / refreshes resolve to the app shell instead of 404ing. _Tip: keep this file in `public/` so `vite build` always copies it into `dist/`._
 
 **To deploy a new build** (SWA CLI — scriptable, no CI required):
 
@@ -130,8 +138,8 @@ The deployment token comes from the Azure Portal → your Static Web App → **M
 
 **Alternatives:**
 
-- **VS Code** — the *Azure Static Web Apps* extension: right-click the app → **Deploy**, with build output `dist`.
-- **GitHub Actions (CI)** — Azure's `Azure/static-web-apps-deploy` action on push to `main`. *Not currently committed to this repo* — the site is deployed manually today; add a workflow if you want push-to-deploy.
+- **VS Code** — the _Azure Static Web Apps_ extension: right-click the app → **Deploy**, with build output `dist`.
+- **GitHub Actions (CI)** — Azure's `Azure/static-web-apps-deploy` action on push to `main`. _Not currently committed to this repo_ — the site is deployed manually today; add a workflow if you want push-to-deploy.
 
 ---
 
@@ -156,8 +164,8 @@ nysds-react-lab/
    ├─ types/common.ts            # generic paging contract (Entity/ColumnDef/PagedWeb*)
    ├─ hooks/                     # useNysTableSortIndicator, useNysTableRowAction
    └─ features/
-      ├─ paginated-table-demo/   # Tab 1 — Paginated Table Demo (built)
-      ├─ registration-form-demo/ # Tab 2 — Form Controls Demo (form-associated controls)
+      ├─ paginated-table-demo/   # Tab 1 — paginated table demo (built)
+      ├─ registration-form-demo/ # Tab 2 — Accessible Form (form-associated controls)
       └─ theme/ThemePicker.tsx   # live theme switcher
 ```
 
@@ -173,4 +181,4 @@ nysds-react-lab/
 
 ---
 
-*Built as an NYSDS + AI-assisted-development lab. The `nysds` MCP server is the live source of truth — confirm any component prop or event there at build time.*
+_Built as an NYSDS + AI-assisted-development lab. The `nysds` MCP server is the live source of truth — confirm any component prop or event there at build time._

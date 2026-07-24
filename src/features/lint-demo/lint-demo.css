@@ -1,0 +1,25 @@
+/* ⚠️ TEMP DEMO FILE — delete after the interview demo.
+   Purpose: show the NYSDS Stylelint compliance gate (declaration-strict-value).
+   Inline: hover the red squiggles in VS Code. CLI: npx stylelint src/features/lint-demo/lint-demo.css
+   Every declaration below is flagged: "Use a --nys-* design token ... instead of a hardcoded value."
+   The compliant, green version is commented beneath it. */
+
+.promo-banner {
+  color: #1b1b1b;
+  background-color: #f0f0f0;
+  margin: 16px;
+  padding: 8px 12px;
+  font-size: 14px;
+  gap: 10px;
+}
+
+/* Compliant — uncomment to show red → green:
+.promo-banner {
+  color: var(--nys-color-text);
+  background-color: var(--nys-color-surface);
+  margin: var(--nys-space-200);
+  padding: var(--nys-space-100) var(--nys-space-150);
+  font-size: var(--nys-font-size-body-md);
+  gap: var(--nys-space-100);
+}
+*/
